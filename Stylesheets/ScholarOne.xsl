@@ -13,6 +13,10 @@
 
     <!-- TEI document structure, creation of main header components, front (summary), body, and back -->
     <xsl:template match="article_set/article">
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <xsl:variable name="ms_no" select="@ms_no"/>
         <xsl:variable name="localISSN">
             <xsl:value-of select="journal/issn[@issn_type='print']"/>
@@ -133,9 +137,25 @@
                 <!--front>
                     <xsl:apply-templates select="abstract"/>
                 </front-->
-                <body>
-                    <xsl:apply-templates select="body/*"/>
-                </body>
+                <xsl:choose>
+                    <xsl:when test="body/*">
+                        <body>
+                            <xsl:apply-templates select="body/*"/>
+                        </body>
+                    </xsl:when>
+                    <xsl:when test="string-length($rawfulltextpath) &gt; 0">
+                        <body>
+                            <div>
+                                <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
+                            </div>
+                        </body>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <body>
+                            <div><p></p></div>
+                        </body>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <back>
                     <xsl:apply-templates select="back/*"/>
                 </back>

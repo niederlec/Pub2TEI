@@ -71,6 +71,10 @@
         </xsl:choose>
     </xsl:variable>
     <xsl:template match="SAGEmeta">
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -199,10 +203,25 @@
                 <!--front>
                     <xsl:apply-templates select="body/abstract"/>
                 </front-->
-                <body>
-                    <xsl:apply-templates select="body/*[name()!='keywords' and name()!='abstract']"
-                    />
-                </body>
+                <xsl:choose>
+                    <xsl:when test="body/*[name()!='keywords' and name()!='abstract']">
+                        <body>
+                            <xsl:apply-templates select="body/*[name()!='keywords' and name()!='abstract']"/>
+                        </body>
+                    </xsl:when>
+                    <xsl:when test="string-length($rawfulltextpath) &gt; 0">
+                        <body>
+                            <div>
+                                <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
+                            </div>
+                        </body>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <body>
+                            <div><p></p></div>
+                        </body>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:if test="note|references">
                     <back>
                         <xsl:if test="note">

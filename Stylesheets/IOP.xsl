@@ -40,6 +40,10 @@
         /TEI/teiHeader/fileDesc/sourceDesc/biblStruct >>
     -->
     <xsl:template match="article">
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -167,9 +171,25 @@
 
             </teiHeader>
                 <text>
-                    <body>
-                        <xsl:apply-templates select="//sec-level1"/>
-                    </body>
+                    <xsl:choose>
+                        <xsl:when test="//sec-level1">
+                            <body>
+                                <xsl:apply-templates select="//sec-level1"/>
+                            </body>
+                        </xsl:when>
+                        <xsl:when test="string-length($rawfulltextpath) &gt; 0">
+                            <body>
+                                <div>
+                                    <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
+                                </div>
+                            </body>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <body>
+                                <div><p></p></div>
+                            </body>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <back>
                         <!-- Lancement des refbibs -->
                         <xsl:apply-templates select="/article/back/references"/>

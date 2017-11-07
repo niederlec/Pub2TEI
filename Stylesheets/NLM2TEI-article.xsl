@@ -910,7 +910,10 @@
    
     <!-- TEI document structure, creation of main header components, front (summary), body, and back -->
     <xsl:template match="article[front] | article[pubfm] | article[suppfm] | headerx">
-        <xsl:message>NLM2TEI-article.xsl</xsl:message>
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -1354,8 +1357,6 @@
                         <xsl:when test="body/* | bdy/p | bdy/sec | bdy/corres/*">
                             <xsl:apply-templates select="body/* | bdy/p | bdy/sec | bdy/corres/*"/>
                             <xsl:apply-templates select="bm/objects/*"/>
-
-                          
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:choose>
@@ -1381,11 +1382,15 @@
                                                     <xsl:value-of select="bdy"/>
                                                 </p>
                                             </xsl:when>
+                                            <xsl:when test="string-length($rawfulltextpath) &gt; 0">
+                                                <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
+                                            </xsl:when>
                                             <xsl:otherwise>
-                                                <p/>
+                                                <body>
+                                                    <div><p></p></div>
+                                                </body>
                                             </xsl:otherwise>
                                         </xsl:choose>
-                                        
                                     </div>
                                 </body> 
                             </xsl:if>
@@ -2816,6 +2821,11 @@
 
     <xsl:template match="title">
         <xsl:choose>
+            <xsl:when test="ancestor::record">
+                <title level="a" type="main" xml:lang="{translate(@lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}">
+                    <xsl:apply-templates/>
+                </title>
+            </xsl:when>
             <xsl:when test="ancestor::app">
                 <title>
                     <xsl:apply-templates/>

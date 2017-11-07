@@ -57,6 +57,10 @@
     </xsl:variable>
 
     <xsl:template match="els:article[els:item-info] | els:converted-article[els:item-info] | converted-article[item-info] | article[item-info]">
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -175,10 +179,26 @@
                 <!--front>
                     <xsl:apply-templates select="els:head/ce:abstract | head/ce:abstract"/>
                 </front-->
-                <body>
-                    <xsl:apply-templates select="els:body/*"/>
-                    <xsl:apply-templates select="body/*"/>
-                </body>
+                <xsl:choose>
+                    <xsl:when test="els:body|body">
+                        <body>
+                            <xsl:apply-templates select="els:body/*"/>
+                            <xsl:apply-templates select="body/*"/>
+                        </body>
+                    </xsl:when>
+                    <xsl:when test="string-length($rawfulltextpath) &gt; 0">
+                        <body>
+                            <div>
+                                <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
+                            </div>
+                        </body>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <body>
+                        <div><p></p></div>
+                        </body>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <back>
                     <!-- Bravo: Elsevier a renommé son back en tail... visionnaire -->
                     <xsl:apply-templates select="els:back/* | els:tail/* | tail/*"/>

@@ -8,7 +8,10 @@
     <!-- Le format de la RCS utilise essentiellement des composant NLM en ayant pris le soin (!) de définir ses propres constructions ici el là. -->
     <!-- On sent le travail visionaire du grouillot... -->
     <xsl:template match="article[art-admin]">
-        <xsl:message>RoyalChemicalSociety.xsl</xsl:message>
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -78,10 +81,13 @@
                                 <xsl:when test="normalize-space(art-body)">
                                     <xsl:apply-templates select="art-body/*"/> 
                                 </xsl:when>
-                                <xsl:otherwise>
+                                <xsl:when test="string-length($rawfulltextpath) &gt; 0">
                                     <div>
-                                        <p></p>
+                                        <p><xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/></p>
                                     </div>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <div><p></p></div>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </body>

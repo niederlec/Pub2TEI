@@ -49,6 +49,10 @@
     </xsl:variable>
     <!-- TEI document structure, creation of main header components, front (summary), body, and back -->
     <xsl:template match="/Publisher[not(Series/Book/descendant::Chapter)]">
+        <xsl:comment>
+            <xsl:text>Version 0.1 générée le </xsl:text>
+            <xsl:value-of select="$datecreation"/>
+        </xsl:comment>
         <TEI>
             <xsl:attribute name="xsi:noNamespaceSchemaLocation">
                 <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
@@ -181,7 +185,11 @@
 			<text>
 			    <body>
 			        <div>
-			            <p></p>
+			            <xsl:if test="string-length($rawfulltextpath) &gt; 0">
+			                <p>
+			                    <xsl:value-of select="unparsed-text($rawfulltextpath, 'UTF-8')"/>
+			                </p>
+			            </xsl:if>
 			        </div>
 			    </body>
 			</text>
