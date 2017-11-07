@@ -4,6 +4,7 @@
     xmlns:ce="http://www.elsevier.com/xml/common/dtd" xmlns="http://www.tei-c.org/ns/1.0"
     xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" xpath-default-namespace="http://www.wiley.com/namespaces/wiley"
+    xmlns:p="https://istex.github.io/Pub2TEI"
 	exclude-result-prefixes="#all">
     <xsl:output encoding="UTF-8" method="xml"/>
     <!-- date de creation -->
@@ -109,14 +110,9 @@
     
     <!-- TEI document structure, creation of main header components, front (summary), body, and back -->
     <xsl:template match="component">
-        <xsl:comment>
-            <xsl:text>Version 0.1 générée le </xsl:text>
-            <xsl:value-of select="$datecreation"/>
-        </xsl:comment>
+        <xsl:call-template name="version"/>
         <TEI>
-            <xsl:attribute name="xsi:noNamespaceSchemaLocation">
-                <xsl:text>https://istex.github.io/odd-istex/out/istex.xsd</xsl:text>
-            </xsl:attribute>
+            <xsl:attribute name="xsi:noNamespaceSchemaLocation" select="$parameters/p:parameters/p:schemaURI"/>
             <xsl:attribute name="xml:lang">
                 <xsl:value-of select="$codeLangue"/>
             </xsl:attribute>

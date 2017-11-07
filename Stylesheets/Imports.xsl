@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" exclude-result-prefixes="#all">
     <xsl:include href="Default.xsl"/>
+    <xsl:include href="Common.xsl"/>
     <xsl:include href="NameComponents.xsl"/>
     <xsl:include href="JournalComponents.xsl"/>
     <xsl:include href="BookComponents.xsl"/>
@@ -13,4 +14,5 @@
     <xsl:include href="Bibliography.xsl"/>
     <xsl:include href="Tables.xsl"/>
 	<xsl:include href="Figures.xsl"/>
+    <xsl:variable name="parameters" select="document('Parameters.xml')"/>
 </xsl:stylesheet>
